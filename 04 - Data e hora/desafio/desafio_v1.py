@@ -95,7 +95,7 @@ class Conta:
 
         else:
             print("\n@@@ Operação falhou! O valor informado é inválido. @@@")
-
+        
         return False
 
     def depositar(self, valor):
@@ -110,32 +110,32 @@ class Conta:
 
 
 class ContaCorrente(Conta):
-    def __init__(self, numero, cliente, limite=500, limite_saques=3):
+    def __init__(self, numero, cliente, limite=500, limite_transacoes=10):
         super().__init__(numero, cliente)
         self._limite = limite
-        self._limite_saques = limite_saques
+        self._limite_transacoes = limite_transacoes
 
     @classmethod
-    def nova_conta(cls, cliente, numero, limite, limite_saques):
-        return cls(numero, cliente, limite, limite_saques)
+    def nova_conta(cls, cliente, numero, limite, limite_transacoes):
+        return cls(numero, cliente, limite, limite_transacoes)
 
     def sacar(self, valor):
-        numero_saques = len(
+        numero_transacoes = len(
             [transacao for transacao in self.historico.transacoes if transacao["tipo"] == Saque.__name__]
         )
 
         excedeu_limite = valor > self._limite
-        excedeu_saques = numero_saques >= self._limite_saques
+        excedeu_transacoes = numero_transacoes >= self._limite_transacoes
 
         if excedeu_limite:
             print("\n@@@ Operação falhou! O valor do saque excede o limite. @@@")
 
-        elif excedeu_saques:
-            print("\n@@@ Operação falhou! Número máximo de saques excedido. @@@")
+        elif excedeu_transacoes:
+            print("\n@@@ Operação falhou! Número máximo de transações excedido. @@@")
 
         else:
             return super().sacar(valor)
-
+        numero_transacoes +=1
         return False
 
     def __str__(self):
@@ -170,6 +170,8 @@ class Historico:
 
     # TODO: filtrar todas as transações realizadas no dia
     def transacoes_do_dia(self):
+        self._hora_atual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(self._transacoes, self._hora_atual)
         pass
 
 
